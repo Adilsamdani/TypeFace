@@ -1,0 +1,56 @@
+Question 1: Given an input black & white image. Return bounding boxes of all isolated white patches in the images.
+
+Input: A MxN matrix with 0 & 1s. 0s indicating black pixel and 1 indicating white pixel
+Output: List of bounding boxes of white patches where each bounding box is represented using 4 numbers (centerX, centerY, width & height). [[8, 8, 3, 3], [16, 15, 4, 4]
+Sample image1: https://cortex6-my.sharepoint.com/:i:/g/personal/kishoreb_typeface_ai/Ed_aqlVwoqpIjELK4L8cAPEB5nJ72tlhTTeXIz1N7IJxgA?e=3hA5lp
+has 2 isolated white patches
+Sample image2: https://cortex6-my.sharepoint.com/:i:/g/personal/kishoreb_typeface_ai/EcCu_ueplYVOt5o2wdcSko4BILGU4MHrxZQ7B6wRKwxr9Q?e=T2GAnP
+has 1 isolated withe patch
+
+
+Solutin:
+#include <iostream>
+#include <vector>
+#include <cv.h>
+#include <highgui.h>
+
+using namespace std;
+
+int main(int argc, char** argv){
+
+
+IplImage* img_in = cvLoadImage("Schwarzer_Kreis.png",1);
+
+
+IplImage* img_working = cvCreateImage(cvGetSize(img_in), 8, 1);
+cvCvtColor(img_in, img_working, CV_BGR2GRAY);
+
+CvSeq* seq;
+
+vector<CvRect> boxes;
+
+CvMemStorage* storage = cvCreateMemStorage(0);
+cvClearMemStorage(storage);
+
+cvFindContours(img_working, storage, &seq, sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE, cvPoint(600,200));
+
+CvRect boundbox ;
+
+for(; seq; seq = seq->h_next) {
+ boundbox = cvBoundingRect(seq);
+ boxes.push_back(boundbox);
+}
+
+for (int ii=0; ii<boxes.size(); ii++) {
+cout << boxes[ii].x << endl;
+cout << boxes[ii].y << endl;
+cout << boxes[ii].width << endl;
+cout << boxes[ii].height << endl;
+}
+
+
+cvWaitKey(0);
+
+return 0;
+
+}
